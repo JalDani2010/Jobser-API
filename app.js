@@ -14,7 +14,10 @@ app.use(express.json());
 const jobsRouter = require("./routes/jobs");
 const authRouter = require("./routes/auth");
 
-app.use("/api/v1/jobs", jobsRouter);
+const authenticateUser = require("./middleware/authentication");
+
+
+app.use("/api/v1/jobs", authenticateUser, jobsRouter);
 app.use("/api/v1/auth", authRouter);
 
 // middleware
@@ -25,7 +28,7 @@ const port = process.env.PORT || 3000;
 
 const start = async () => {
   try {
-    const connect =  require("./db/connect.js");
+    const connect = require("./db/connect.js");
     await connect(process.env.MONGO_URI);
     app.listen(port, () =>
       console.log(`Server is listening on port ${port}...`)
